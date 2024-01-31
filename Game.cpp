@@ -1,9 +1,5 @@
 #include "Game.h"
 
-#include <iostream>
-
-typedef unsigned short int USHORT;
-
 const USHORT COLUMNS  = 3;
 const USHORT ROWS = 3;
 const char P1SIGN = 'X';
@@ -34,13 +30,19 @@ void Game::drawBoard() {
     }
 }
 
-bool Game::isPlayerReady() {
+bool Game::isReady() {
+    std::cout << "Enter player 1's name: ";
+    std::cin >> m_player1;
+
+    std::cout << "Enter player 2's name: ";
+    std::cin >> m_player2;
+
     char choice;
-    std::cout << "Ready to begin? [y/N]: ";
+    std::cout << "\nStart game? [y/N]: ";
     std::cin >> choice;
 
     if(tolower(choice) == 'y') {
-        std::cout << "Good luck!\n\n";
+        std::cout << "\nHope you enjoy the game " << m_player1 << " and " << m_player2 << ", good luck!\n\n";
         return true;
     } else {
         std::cout << "See you next time!\n";
@@ -50,19 +52,28 @@ bool Game::isPlayerReady() {
 
 bool Game::firstTurn() {
     // 0 for crosses, 1 for knots
-    USHORT offset = 1;
-    USHORT range = 2;
+    const USHORT offset = 1;
+    const USHORT range = 2;
+    bool first;
 
-    srand((unsigned)time(NULL)); // provides a seed value
-    USHORT random = offset + (rand() % range); // generates random number {1, 2}
+    srand((unsigned)time(NULL));
+    USHORT random = offset + (rand() % range);
 
-    std::cout << "Player " << random << " goes first."  << std::endl;
+    std::cout << m_player1 << " (Crosses)" << " vs. " << m_player2 << " (Knots).\n";
 
-    return random - 1;
+    if(random - 1) {
+        first = true;
+        std::cout << m_player1 << " goes first."  << std::endl;
+    } else {
+        first = false;
+        std::cout << m_player2 << " goes first."  << std::endl;
+    }
+
+    return first;
 }
 
 void Game::loop() {
-    bool choice = isPlayerReady();
+    bool choice = isReady();
 
     for(USHORT i = 0; i < 9; ++i)
         m_openSpaces.push_back(i);
